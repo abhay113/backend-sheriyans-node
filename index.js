@@ -9,11 +9,20 @@ const port = 3000;
 
 app.use(accessLog);
 app.use(errorLog);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res
+    .status(500)
+    .send({ status: "server-error", message: "Something went wrong!" });
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.get("/err", (req, res, next) => {
+  return next(new Error("Page not found"));
+});
 function accessLog(req, res, next) {
   const { hostname, method, path, ip, protocol } = req;
   console.log(`ACCESS: ${method} ${protocol}://${hostname}${path} - ${ip}`);
