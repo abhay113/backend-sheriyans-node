@@ -5,21 +5,13 @@ const port = 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res
-    .status(500)
-    .send({ status: "server-error", message: "Something went wrong!" });
-});
+app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   app.locals.title = "My App";
-  res.send("Hello World!");
-});
-
-app.get("/err", (req, res, next) => {
-  return next(new Error("Page not found"));
+  res.render("index");
 });
 
 app.listen(port, () => {
