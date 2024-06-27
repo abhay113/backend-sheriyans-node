@@ -1,18 +1,29 @@
 const express = require("express");
 const app = express();
-const cookieParser = require("cookie-parser");
-
-app.use(cookieParser()); // middleware to parse cookies
-
+const bcrypt = require("bcryptjs");
 app.get("/", (req, res) => {
-  res.cookie("name", "John Doe"); //setting cookie
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash("password123", salt, (err, hash) => {
+      console.log(hash);
+      console.log(salt);
+      // Store hash in your password DB.
+    });
+  });
   res.send("Hello, World!");
 });
 
-app.get("/read", (req, res) => {
-  console.log(req.cookies); // reading cookies
+app.get("/check", (req, res) => {
+  bcrypt.compare(
+    "password123",
+    "$2a$10$aQ4zULTkcc9dKnuDzJ6IhODpwop5kdsV5KmGULAKiFmAmr/z4cNua",
+    (err, result) => {
+      if (err) throw err;
+      console.log(result);
+    }
+  );
   res.send("Hello, World!");
 });
+
 app.listen(3000, () => {
   console.log(`Server is running on port 3000!`);
 });
