@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 mongoose
   .connect("mongodb://localhost/authentication")
-  .then("connection established successfully");
-
+  .then(console.log("connected"));
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -19,6 +18,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  posts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "post",
+    },
+  ],
   profileImage: {
     type: String,
     default: "default.jpg",
