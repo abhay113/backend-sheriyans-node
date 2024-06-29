@@ -14,8 +14,10 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-router.get("/profile", isLoggedIn, (req, res) => {
-  res.send(req.user);
+router.get("/profile", isLoggedIn, async (req, res) => {
+  let user = await User.findOne({ email: req.user.email })
+  console.log(user)
+  res.render("profile", { user });
 });
 
 router.post("/login", async (req, res) => {
@@ -27,7 +29,7 @@ router.post("/login", async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: "Wrong password!" });
     let token = jwt.sign({ email: email, userid: user._id }, "secret");
     res.cookie("token", token);
-    return res.status(200).json({ message: "user logged in successfully" });
+    return res.status(200).redirect("/profile");
   });
 });
 
@@ -47,7 +49,6 @@ router.post("/register", async (req, res) => {
         if (err) throw err;
         password = hash;
         let newUser = await User.create({ email, username, password, age });
-
         let token = jwt.sign({ email: email, userid: newUser._id }, "secret");
         res.cookie("token", token);
         return res
