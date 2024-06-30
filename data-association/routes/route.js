@@ -15,10 +15,21 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/profile", isLoggedIn, async (req, res) => {
-  let user = await User.findOne({ email: req.user.email })
-  console.log(user)
+  let user = await User.findOne({ email: req.user.email }).populate("posts", { strictPopulate: false })
   res.render("profile", { user });
 });
+router.post("/post", isLoggedIn, async (req, res) => {
+  let user = await User.findOne({ email: req.user.email })
+  let content = req.body.content;
+  let post = await Post.create({
+    user: user._id,
+    content: content
+  })
+
+  user.posts.push(post._id);
+  await user.save();
+  res.redirect("/profile")
+})
 
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
