@@ -5,6 +5,7 @@ const Post = require("../models/post.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const upload = require("../utils/multer");
 
 router.get("/", (req, res) => {
   res.render("index");
@@ -99,6 +100,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/update-profile", upload.single("image"), async (req, res) => {
+  console.log(req.file);
+  res.send(req.file);
+});
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
     res.send("you must be logged in !!");
