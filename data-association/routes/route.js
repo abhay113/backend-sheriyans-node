@@ -15,21 +15,37 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/profile", isLoggedIn, async (req, res) => {
-  let user = await User.findOne({ email: req.user.email }).populate("posts", { strictPopulate: false })
+  let user = await User.findOne({ email: req.user.email }).populate("posts", {
+    strictPopulate: false,
+  });
   res.render("profile", { user });
 });
+
+router.get("/like/:id", isLoggedIn, async (req, res) => {
+  let post = await Post.findOne({ _id: req.params.id }).populate("user", {
+    strictPopulate: false,
+  });
+
+  if (post.likes.indexOf(req.user.userid) === -1) {
+    post.likes.push(req.user.userid);
+  } else {
+    post.likes.splice(post.likes.indexOf(req.user.userid), 1);
+  }
+  await post.save();
+  res.redirect("/profile");
+});
 router.post("/post", isLoggedIn, async (req, res) => {
-  let user = await User.findOne({ email: req.user.email })
+  let user = await User.findOne({ email: req.user.email });
   let content = req.body.content;
   let post = await Post.create({
     user: user._id,
-    content: content
-  })
+    content: content,
+  });
 
   user.posts.push(post._id);
   await user.save();
-  res.redirect("/profile")
-})
+  res.redirect("/profile");
+});
 
 router.post("/login", async (req, res) => {
   let { email, password } = req.body;
@@ -62,9 +78,7 @@ router.post("/register", async (req, res) => {
         let newUser = await User.create({ email, username, password, age });
         let token = jwt.sign({ email: email, userid: newUser._id }, "secret");
         res.cookie("token", token);
-        return res
-          .status(200)
-          .json({ message: "user registered successfully" });
+        return res.status(200).redirect("/profile");
       });
     });
   }
