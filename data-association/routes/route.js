@@ -100,10 +100,24 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/update-profile", upload.single("image"), async (req, res) => {
-  console.log(req.file);
-  res.send(req.file);
+router.get("/edit-profile", isLoggedIn, async (req, res) => {
+  let user = await User.findOne({ email: req.user.email });
+  res.render("edit-profile", { user });
+  console.log(user);
 });
+
+router.post(
+  "/update-profile",
+  isLoggedIn,
+  upload.single("image"),
+  async (req, res) => {
+    let user = await User.findOne({ id: req.user.id });
+    user.profileImage = req.file.filename;
+    await user.save();
+
+    res.send(user);
+  }
+);
 function isLoggedIn(req, res, next) {
   if (!req.cookies.token) {
     res.send("you must be logged in !!");

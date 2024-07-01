@@ -10,12 +10,17 @@
 
 <body>
     <div class="w-full bg-zinc-900 h-screen text-white p-10">
-        <div class="flex align-center  ">
-<img src="/upload/" alt="">
+        <div class="flex items-center ">
+            <div class="flex flex-col mr-10 items-center">
+                <img class="w-10 h-10 rounded-full border-2 border-zinc-800 object-cover"
+                    src="/images/upload/<%=user.profileImage%>" alt="default image">
+                <a href="/edit-profile">edit image</a>
+            </div>
+
             <h1 class="text-3xl"> <span class="text-light"> Hello, </span>
                 <%= user.username%> 👋
             </h1>
-            <a href="/logout" class="text-blue-500  mt-5 bg-red-500 px-3 py2 rounded-md text-sm"> Logout here</a>
+            <a href="/logout" class="text-blue-500 ml-5 h-10 bg-red-500  rounded-md text-sm"> Logout here</a>
         </div>
 
         <h5 class="mb-5 text-xl">
