@@ -34,6 +34,21 @@ router.get("/like/:id", isLoggedIn, async (req, res) => {
   await post.save();
   res.redirect("/profile");
 });
+router.get("/edit/:id", isLoggedIn, async (req, res) => {
+  let post = await Post.findOne({ _id: req.params.id });
+  res.render("edit", { post });
+});
+
+router.post("/edit/:id", isLoggedIn, async (req, res) => {
+  let { content } = req.body;
+  let post = await Post.findOne({ _id: req.params.id });
+  post.content = content;
+  let updated = await post.save();
+  console.log(post);
+  console.log(updated);
+  res.redirect("/profile");
+});
+
 router.post("/post", isLoggedIn, async (req, res) => {
   let user = await User.findOne({ email: req.user.email });
   let content = req.body.content;

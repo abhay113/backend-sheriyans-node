@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>PostGram</title>
+</head>
+
+<body>
+    <div class="w-full bg-zinc-900 h-screen text-white p-10">
+        <h5 class="mb-5 text-xl">
+            Edit Post
+        </h5>
+        <form method="post" action="/edit/<%=post._id%>">
+            <textarea class="resize-none  bg-transparent border-2 border-zinc-800 rounded-md"
+                name="content"> <%= post.content %></textarea>
+            <input type="submit" class="px-3 py-2 cursor-pointer rounded-md bg-yellow-500 block" value="Update Post">
+
+        </form>
+    </div>
+    </div>
+</body>
+
+</html>
